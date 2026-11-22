@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: my-dashboard
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: DASHBOARD_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DEMO_MODE
+        value: "false"
+      - key: CACHE_SECONDS
+        value: "300"
+      - key: SEQTA_HEADLESS
+        value: "true"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: RELOAD
+        value: "false"

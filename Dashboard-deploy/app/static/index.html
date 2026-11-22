@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>My Dashboard</h1>
+        <p id="todayLabel" class="muted"></p>
+        <p id="updatedLabel" class="muted small"></p>
+      </div>
+      <div class="top-actions">
+        <button id="refreshBtn" class="btn ghost">Refresh</button>
+        <button id="importBtn" class="btn">Import / Setup</button>
+      </div>
+    </header>
+
+    <section id="statusBar" class="status-bar" aria-label="Connector status"></section>
+    <div id="warnings" class="warnings"></div>
+
+    <section class="summary" aria-label="Summary">
+      <div class="summary-card"><div class="summary-value" id="statClasses">0</div><div class="summary-label">Classes today</div></div>
+      <div class="summary-card"><div class="summary-value" id="statDueSoon">0</div><div class="summary-label">Due in 7 days</div></div>
+      <div class="summary-card"><div class="summary-value" id="statOverdue">0</div><div class="summary-label">Overdue</div></div>
+      <div class="summary-card"><div class="summary-value" id="statEmails">0</div><div class="summary-label">Emails shown</div></div>
+    </section>
+
+    <main class="layout">
+      <section class="panel timetable-panel">
+        <div class="panel-head">
+          <h2>Timetable</h2>
+          <div id="dayTabs" class="day-tabs" role="tablist" aria-label="Days"></div>
+        </div>
+        <div id="timetableList" class="timetable-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Upcoming assignments</h2>
+          <select id="assignmentFilter" aria-label="Filter assignments">
+            <option value="upcoming">Upcoming</option>
+            <option value="all">All</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+        <div id="assignmentsList" class="card-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Inbox</h2></div>
+        <div id="emailsList" class="card-list"></div>
+      </section>
+    </main>
+
+    <footer class="footer">Runs locally at <code>127.0.0.1:8000</code>. Configure Gmail (IMAP App Password) and SEQTA in <code>.env</code>, or import SEQTA JSON.</footer>
+  </div>
+
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h2 id="modalTitle">Setup / Import</h2>
+        <button class="icon-btn" data-close="1" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-box">
+          <p><strong>Easiest Gmail setup (no Google Cloud/OAuth):</strong> use a Google <strong>App Password</strong>. In your Google account: turn on 2‑Step Verification, then create an App Password at <code>myaccount.google.com/apppasswords</code>. Paste it below and save. Personal Gmail usually works; some school/work accounts block app passwords/IMAP.</p>
+        </div>
+
+        <h3 class="section-title">Gmail accounts (App Password)</h3>
+        <div id="gmailAccounts" class="settings-grid"></div>
+        <div class="settings-actions">
+          <button id="saveSettingsBtn" class="btn">Save Gmail settings</button>
+          <span id="settingsMsg" class="msg"></span>
+        </div>
+
+        <hr class="divider" />
+
+        <h3 class="section-title">SEQTA import (easy fallback)</h3>
+        <p class="muted small" style="margin-top:0">Paste your timetable/assignments JSON below. This is saved locally and used when SEQTA mode is <code>import</code>.</p>
+        <label for="importArea" class="field-label">SEQTA JSON</label>
+        <textarea id="importArea" spellcheck="false" placeholder='{"timetable":[{"day":"Monday","start":"08:50","end":"09:40","subject":"Maths","room":"B12","teacher":"Mr N"}],"assignments":[{"title":"Essay","subject":"English","due":"2026-11-25T23:59"}]}'></textarea>
+        <div id="importMsg" class="msg"></div>
+        <div class="settings-actions">
+          <button id="saveImportBtn" class="btn ghost">Import SEQTA JSON</button>
+        </div>
+
+        <details class="help-details">
+          <summary>Advanced: SEQTA automation (Playwright)</summary>
+          <p class="muted small">If you want to try automation, edit <code>.env</code>: set <code>SEQTA_MODE=playwright</code>, fill <code>SEQTA_BASE_URL</code>, <code>SEQTA_USERNAME</code>, <code>SEQTA_PASSWORD</code>, and URLs/selectors. Install with <code>pip install -r requirements-seqta.txt && python -m playwright install chromium</code>. This is school-specific and may need tweaking.</p>
+        </details>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" data-close="1">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
